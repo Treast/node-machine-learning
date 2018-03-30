@@ -11,3 +11,4 @@ let network = new Network([
     hiddenLayer,
     outputLayer
 ])
+
