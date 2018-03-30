@@ -7,7 +7,7 @@ import Neuron from './models/Neuron'
 
 let inputLayer = new InputLayer([new Neuron(0), new Neuron(0)])
 
-let outputLayer = new OutputLayer([new Neuron(1)])
+let outputLayer = new OutputLayer(1)
 
 let network = new Network()
 network.setInputLayer(inputLayer)

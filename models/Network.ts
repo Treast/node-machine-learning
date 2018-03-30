@@ -45,12 +45,12 @@ export default class Network {
         }
     }
 
-    getInputLayer(): Layer {
-        return this.layers[0]
+    getInputLayer(): InputLayer {
+        return this.layers[0] as InputLayer
     }
 
-    getOutputLayer(): Layer {
-        return this.layers[this.layers.length - 1]
+    getOutputLayer(): OutputLayer {
+        return this.layers[this.layers.length - 1] as OutputLayer
     }
 
     activate() {
@@ -77,13 +77,22 @@ export default class Network {
             for(let j = 0; j < layer.getNumberOfNeurons(); j++) {
                 let neuron = layer.getNeuron(j)
                 neuron.postActivation()
-                console.log(neuron.getValue())
             }
         }
+
+        let output = this.getOutputLayer().getNeuron(0).getValue()
+        console.log("Output: ", output)
+        console.log("Expected: ", this.getOutputLayer().getExpectedValue())
+        console.log("Delta: ", this.getOutputLayer().getExpectedValue() - output)
+
+        this.backPropagate()
     }
 
-    backPropagate() {
+    private backPropagate() {
         // TODO: Implementation
+        for(let i = this.layers.length - 1; i > 0; i--) {
+            
+        }
     }
 
     reassignWeight() {
