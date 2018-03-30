@@ -1,10 +1,17 @@
 import Neuron from './Neuron'
 
 export default class Layer {
-    
-    private neurons: Neuron[]
+    protected neurons: Neuron[]
 
-    constructor(neurons: Neuron[]) {
+    constructor(neurons: Neuron[] = []) {
         this.neurons = neurons
+    }
+
+    getNumberOfNeurons(): number {
+        return this.neurons.length
+    }
+
+    getNeuron(index: number) {
+        return this.neurons[index]
     }
 }
