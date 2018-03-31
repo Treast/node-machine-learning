@@ -5,9 +5,9 @@ import HiddenLayer from './models/Layers/HiddenLayer'
 import OutputLayer from './models/Layers/OutputLayer'
 import Neuron from './models/Neuron'
 
-let inputLayer = new InputLayer([new Neuron(0), new Neuron(0)])
+let inputLayer = new InputLayer([new Neuron(1), new Neuron(2)])
 
-let outputLayer = new OutputLayer(1)
+let outputLayer = new OutputLayer(1.5)
 
 let network = new Network()
 network.setInputLayer(inputLayer)
@@ -15,4 +15,6 @@ network.setHiddenLayers(1, 2)
 network.setOutputLayer(outputLayer)
 network.initializeWeight()
 
-network.activate()
+network.train(100000000)
+
+network.predict(new InputLayer([new Neuron(2), new Neuron(2)]))

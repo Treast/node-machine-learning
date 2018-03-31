@@ -1,8 +1,10 @@
 export default class Neuron {
     private value: number
+    private delta: number
 
     constructor(value: number = 0) {
         this.value = value
+        this.delta = 0
     }
 
     sigmoid(x: number) {
@@ -21,5 +23,11 @@ export default class Neuron {
         this.value = this.sigmoid(this.value)
     }
 
-
+    setDelta(delta: number) {
+        this.delta = delta
+    }
+    
+    getDelta() {
+        return this.delta
+    }
 }
