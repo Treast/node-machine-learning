@@ -15,6 +15,6 @@ network.setHiddenLayers(1, 2)
 network.setOutputLayer(outputLayer)
 network.initializeWeight()
 
-network.train(100000000)
+network.train(2)
 
 network.predict(new InputLayer([new Neuron(2), new Neuron(2)]))

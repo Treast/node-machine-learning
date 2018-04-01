@@ -25,12 +25,16 @@ export default class Network {
             this.activate()
         }
 
-        console.log("Finale weight: ", this.weight)
+        console.log("------------")
+        console.log(this.weight)
+        console.log("----------------------")
     }
 
     setHiddenLayers(numberOfHiddenLayers: number = 1, numberOfNeuronsOnAHiddenLayer: number = 1) {
         for(let i = 0; i < numberOfHiddenLayers; i++) {
-            this.layers.push(new HiddenLayer(numberOfNeuronsOnAHiddenLayer))
+            let hiddenLayers = new HiddenLayer(numberOfNeuronsOnAHiddenLayer)
+            this.layers.push(hiddenLayers)
+            this.hiddenLayers.push(hiddenLayers)
         }
     }
 
@@ -54,6 +58,7 @@ export default class Network {
                 }
             }
         }
+        console.log("----------------------")
         console.log(this.weight)
     }
 
@@ -84,20 +89,13 @@ export default class Network {
                 connectedNeuron.postActivation()
             }
         }
+        this.postActivating()
     }
 
     private postActivating() {
-        for(let i = 1; i < this.layers.length; i++) {
-            let layer = this.layers[i]
-            for(let j = 0; j < layer.getNumberOfNeurons(); j++) {
-                let neuron = layer.getNeuron(j)
-                neuron.postActivation()
-            }
-        }
-
         let output = this.getOutputLayer().getNeuron(0).getValue()
         let delta = this.getOutputLayer().getExpectedValue() - output
-        console.log("Delta: ", delta - output)
+        //console.log("Delta: ", delta - output)
         this.getOutputLayer().getNeuron(0).setDelta(delta)
 
         this.backPropagate()
@@ -108,11 +106,19 @@ export default class Network {
             let layer = this.layers[i]
             let connectedLayer = this.layers[i - 1]
 
-            for(let j = 0; j < layer.getNumberOfNeurons(); j++) {
-                for(let k = 0; k < connectedLayer.getNumberOfNeurons(); k++) {
-                    let delta = layer.getNeuron(j).getValue() * this.weight[i - 1][k][j] * connectedLayer.getNeuron(k).getValue() * (1 - connectedLayer.getNeuron(k).getValue())
-                    connectedLayer.getNeuron(k).setDelta(delta)
+            for(let k = 0; k < connectedLayer.getNumberOfNeurons(); k++) {
+                let delta = connectedLayer.getNeuron(k).getValue() * (1 - connectedLayer.getNeuron(k).getValue())
+                connectedLayer.getNeuron(k).setDelta(delta)
+                console.log("-----------------------------------")
+                for (let j = 0; j < layer.getNumberOfNeurons(); j++) {
+                    console.log("--------------")
+                    connectedLayer.getNeuron(k).setDeltaModifier(this.weight[i - 1][k][j], layer.getNeuron(j).getDelta())
+                    console.log("Delta: ", layer.getNeuron(j).getDelta())
+                    console.log("Weight: ", this.weight[i - 1][k][j])
+                    console.log("--------------")
                 }
+                console.log("Modifier: ", connectedLayer.getNeuron(k).deltaModifier)
+                connectedLayer.getNeuron(k).computeDelta()
             }
         }
         this.reassignWeight()
@@ -124,8 +130,22 @@ export default class Network {
             let connectedLayer = this.layers[i + 1]
             for (let j = 0; j < layer.getNumberOfNeurons(); j++) {
                 for (let k = 0; k < connectedLayer.getNumberOfNeurons(); k++) {
-                    this.weight[i][j][k] += this.learningStep * layer.getNeuron(j).getValue() * connectedLayer.getNeuron(k).getDelta() 
+                    //console.log("I: ", i, " J: ", j, " K: ", k)
+                    let delta = this.learningStep * layer.getNeuron(j).getValue() * connectedLayer.getNeuron(k).getDelta()
+                    //console.log(delta)
+                    this.weight[i][j][k] += delta
                 }
+            }
+        }
+
+        this.resetHiddenLayers();
+    }
+
+    private resetHiddenLayers() {
+        for(let i = 0; i < this.hiddenLayers.length; i++) {
+            let layer = this.hiddenLayers[i]
+            for(let j = 0; j < layer.getNumberOfNeurons(); j++) {
+                layer.getNeuron(j).hardReset()
             }
         }
     }
